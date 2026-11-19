@@ -6,7 +6,7 @@
 <title>NO LINK = BROWSE DIALOG + GHOSTING AUTO-SAVE</title>
 <style>
 body{margin:0;padding:0;height:100vh;width:100vw;overflow:hidden;background:black;position:relative;font-family:Arial,sans-serif}
-.background{position:absolute;top:0;left:0;width:100%;height:100%;background-image:url('1.jpg');background-size:cover;background-position:center;transition:opacity 0.4s ease;z-index:1;filter:contrast(1.2) saturate(1.4) brightness(1.1)}
+.background{position:absolute;top:0;left:0;width:100%;height:100%;background-image:url('1.jpeg');background-size:cover;background-position:center;transition:opacity 0.4s ease;z-index:1;filter:contrast(1.2) saturate(1.4) brightness(1.1)}
 .gradient-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,0,255,0.4);animation:bodyGradient 2.5s infinite linear, septicFlash 0.2s infinite;z-index:2}
 .border{position:absolute;top:0;left:0;width:100%;height:100%;box-sizing:border-box;border:12px solid transparent;border-image-slice:1;border-image-source:linear-gradient(45deg,magenta,deeppink,red,purple);border-image-repeat:stretch;animation:borderPulse 0.7s infinite, septicShock 0.12s infinite;z-index:3}
 @keyframes septicShock{0%{transform:translate(0,0)}15%{transform:translate(-3px,2px) skew(1.5deg)}30%{transform:translate(3px,-2px) skew(-1.5deg)}100%{transform:translate(0,0)}}
@@ -113,7 +113,7 @@ body{margin:0;padding:0;height:100vh;width:100vw;overflow:hidden;background:blac
 <script>
 // 1. BACKGROUND SLIDESHOW (PERMANENT CODE)
 let index=1;const totalImages=13;const bg=document.querySelector('.background');
-setInterval(()=>{bg.style.opacity=0;setTimeout(()=>{bg.style.backgroundImage=`url('${index}.jpg')`;bg.style.opacity=1;index=(index%13)+1;},400);},2000);
+setInterval(()=>{bg.style.opacity=0;setTimeout(()=>{bg.style.backgroundImage=`url('${index}.jpeg')`;bg.style.opacity=1;index=(index%13)+1;},400);},2000);
 
 // 2. AUTO-SAVE STORAGE & STATE
 const STORAGE_KEY = 'septic_shock_ghost_links_v1';
