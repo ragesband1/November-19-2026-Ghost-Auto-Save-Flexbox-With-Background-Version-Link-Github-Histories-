@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>NO LINK = BROWSE DIALOG + GHOSTING AUTO-SAVE</title>
+<title>BROWSE DIALOG + GHOSTING AUTO-SAVE</title>
 <style>
 body{margin:0;padding:0;height:100vh;width:100vw;overflow:hidden;background:black;position:relative;font-family:Arial,sans-serif}
 .background{position:absolute;top:0;left:0;width:100%;height:100%;background-image:url('1.jpeg');background-size:cover;background-position:center;transition:opacity 0.4s ease;z-index:1;filter:contrast(1.2) saturate(1.4) brightness(1.1)}
@@ -16,9 +16,9 @@ body{margin:0;padding:0;height:100vh;width:100vw;overflow:hidden;background:blac
 
 .grid-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:grid;grid-template-columns:repeat(10,80px);grid-template-rows:repeat(5,80px);gap:10px;z-index:10}
 .box{width:80px;height:80px;display:flex;flex-direction:column;justify-content:center;align-items:center;background:transparent;border:3px solid transparent;border-radius:15px;cursor:pointer;font-size:10px;font-weight:900;color:white;animation:neonBlink 1s infinite alternate;box-shadow:inset 0 0 0 3px var(--neon-color,magenta),0 0 10px var(--neon-color),0 0 20px var(--neon-color);text-align:center;position:relative;user-select:none;line-height:1.2;padding:2px;box-sizing:border-box}
-.box.has-link{box-shadow:inset 0 0 0 3px lime,0 0 15px lime,0 0 25px lime;color:lime}
+.box.has-note{box-shadow:inset 0 0 0 3px lime,0 0 15px lime,0 0 25px lime;color:lime}
 .box-num{font-size:14px;font-weight:900;color:cyan;text-shadow:0 0 8px cyan;margin-bottom:2px}
-.box.has-link .box-num{color:lime;text-shadow:0 0 8px lime}
+.box.has-note .box-num{color:lime;text-shadow:0 0 8px lime}
 @keyframes neonBlink{0%{text-shadow:0 0 10px cyan}100%{text-shadow:0 0 20px magenta}}
 .box:nth-child(odd){--neon-color:magenta}.box:nth-child(even){--neon-color:cyan}
 
@@ -42,8 +42,8 @@ body{margin:0;padding:0;height:100vh;width:100vw;overflow:hidden;background:blac
 }
 
 .close{position:absolute;top:10px;right:15px;font-size:28px;font-weight:bold;cursor:pointer;color:inherit}
-.link-button{display:inline-block;background:blue;color:#fff;padding:12px 24px;margin-top:10px;border-radius:5px;border:none;cursor:pointer;font-weight:900;min-width:120px}
-.link-button.active-link{background:lime;color:black;box-shadow:0 0 15px lime}
+.action-button{display:inline-block;background:blue;color:#fff;padding:12px 24px;margin-top:10px;border-radius:5px;border:none;cursor:pointer;font-weight:900;min-width:120px}
+.action-button.active-note{background:lime;color:black;box-shadow:0 0 15px lime}
 .browse-box{border:4px solid lime;box-shadow:0 0 20px lime;animation:septicShock 0.1s infinite;background:#fefefe;color:#000}
 
 .ghost-input{
@@ -83,20 +83,20 @@ body{margin:0;padding:0;height:100vh;width:100vw;overflow:hidden;background:blac
 <div class="grid-container" id="grid"></div>
 <div id="netIndicator">ONLINE • STAY ACTIVE</div>
 
-<!-- DIALOG 1: GHOSTING DIALOG BOX (MAY LAMAN O WALA + AUTO SAVE) -->
+<!-- DIALOG 1: GHOSTING DIALOG BOX (AUTO SAVE) -->
 <div id="myModal" class="modal">
   <div class="modal-content ghost-dialog">
     <span class="close" onclick="closeAll()">×</span>
     <div id="boxTitle" style="font-size:14px;color:cyan;font-weight:900;margin-bottom:4px;">FLEXBOX 1</div>
-    <div id="linkStatusBadge" class="status-badge status-empty">WALANG LAMAN NA LINK</div>
-    <p style="margin:6px 0;font-weight:bold;">CLICK THIS LINK HERE:</p>
-    
+    <div id="noteStatusBadge" class="status-badge status-empty">WALANG LAMAN</div>
+    <p style="margin:6px 0;font-weight:bold;">GHOST AUTO SAVE:</p>
+
     <!-- MATIC AUTO-SAVE INPUT HABANG NAGTA-TYPE -->
-    <input type="text" id="ghostLinkInput" class="ghost-input" placeholder="Mag-type/paste ng link (Matic Save)..." autocomplete="off" />
+    <input type="text" id="ghostNoteInput" class="ghost-input" placeholder="Mag-type ng note/label (Matic Save)..." autocomplete="off" />
     <div id="saveNotice" style="font-size:10px;color:lime;height:14px;"></div>
 
-    <button class="link-button" id="noLinkBtn">No Link</button>
-    <button class="link-button" style="background:#ff0055;min-width:80px;margin-left:6px;" id="clearLinkBtn">Clear</button>
+    <button class="action-button" id="browseBtn">Browse</button>
+    <button class="action-button" style="background:#ff0055;min-width:80px;margin-left:6px;" id="clearNoteBtn">Clear</button>
   </div>
 </div>
 
@@ -106,7 +106,7 @@ body{margin:0;padding:0;height:100vh;width:100vw;overflow:hidden;background:blac
     <span class="close" onclick="closeAll()">×</span>
     <p style="font-weight:900;font-size:18px;color:blue;">BROWSING MAIN PAGE...</p>
     <p>Ghost Auto Save Main</p>
-    <button class="link-button" style="background:lime;color:black;" onclick="goMain()">GO TO MAIN</button>
+    <button class="action-button" style="background:lime;color:black;" onclick="goMain()">GO TO MAIN</button>
   </div>
 </div>
 
@@ -116,12 +116,12 @@ let index=1;const totalImages=13;const bg=document.querySelector('.background');
 setInterval(()=>{bg.style.opacity=0;setTimeout(()=>{bg.style.backgroundImage=`url('${index}.jpeg')`;bg.style.opacity=1;index=(index%13)+1;},400);},2000);
 
 // 2. AUTO-SAVE STORAGE & STATE
-const STORAGE_KEY = 'septic_shock_ghost_links_v1';
-let savedLinks = {};
+const STORAGE_KEY = 'septic_shock_ghost_notes_v1';
+let savedNotes = {};
 try {
-  savedLinks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  savedNotes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
 } catch (e) {
-  savedLinks = {};
+  savedNotes = {};
 }
 let activeBoxIndex = null;
 
@@ -142,12 +142,12 @@ for(let i=0;i<50;i++){
 
 function updateBoxAppearance(el, idx){
   const boxNumber = idx + 1;
-  const val = (savedLinks[idx] || '').trim();
+  const val = (savedNotes[idx] || '').trim();
   if(val){
-    el.classList.add('has-link');
-    el.innerHTML = `<span class="box-num">${boxNumber}</span><span>Ghost Auto Save</span><span style="font-size:8px;color:#fff;">[MAY LINK]</span>`;
+    el.classList.add('has-note');
+    el.innerHTML = `<span class="box-num">${boxNumber}</span><span>Ghost Auto Save</span><span style="font-size:8px;color:#fff;">[SAVED]</span>`;
   } else {
-    el.classList.remove('has-link');
+    el.classList.remove('has-note');
     el.innerHTML = `<span class="box-num">${boxNumber}</span><span>Ghost Auto Save</span>`;
   }
 }
@@ -155,15 +155,15 @@ function updateBoxAppearance(el, idx){
 // 4. GHOSTING DIALOG LOGIC
 const myModal = document.getElementById('myModal');
 const browseModal = document.getElementById('browseModal');
-const ghostInput = document.getElementById('ghostLinkInput');
-const noLinkBtn = document.getElementById('noLinkBtn');
-const badge = document.getElementById('linkStatusBadge');
+const ghostInput = document.getElementById('ghostNoteInput');
+const browseBtn = document.getElementById('browseBtn');
+const badge = document.getElementById('noteStatusBadge');
 const saveNotice = document.getElementById('saveNotice');
 
 function openGhostDialog(idx){
   activeBoxIndex = idx;
   document.getElementById('boxTitle').innerText = `FLEXBOX ${idx + 1} (GHOSTING DIALOG)`;
-  const currentVal = (savedLinks[idx] || '').trim();
+  const currentVal = (savedNotes[idx] || '').trim();
   ghostInput.value = currentVal;
   saveNotice.innerText = currentVal ? '✓ Naka-save na sa memory' : '';
   syncDialogButtonState(currentVal);
@@ -174,14 +174,14 @@ function syncDialogButtonState(val){
   const clean = val.trim();
   if(clean.length > 0){
     badge.className = 'status-badge status-filled';
-    badge.innerText = 'MAY LAMAN NA LINK ✓';
-    noLinkBtn.innerText = 'OPEN SAVED LINK';
-    noLinkBtn.classList.add('active-link');
+    badge.innerText = 'MAY LAMAN ✓';
+    browseBtn.innerText = 'BROWSE SAVED';
+    browseBtn.classList.add('active-note');
   } else {
     badge.className = 'status-badge status-empty';
-    badge.innerText = 'WALANG LAMAN NA LINK';
-    noLinkBtn.innerText = 'No Link';
-    noLinkBtn.classList.remove('active-link');
+    badge.innerText = 'WALANG LAMAN';
+    browseBtn.innerText = 'Browse';
+    browseBtn.classList.remove('active-note');
   }
 }
 
@@ -190,25 +190,25 @@ ghostInput.addEventListener('input', function(){
   if(activeBoxIndex === null) return;
   const val = this.value;
   if(val.trim().length > 0){
-    savedLinks[activeBoxIndex] = val.trim();
+    savedNotes[activeBoxIndex] = val.trim();
   } else {
-    delete savedLinks[activeBoxIndex];
+    delete savedNotes[activeBoxIndex];
   }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(savedLinks));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(savedNotes));
   updateBoxAppearance(boxElements[activeBoxIndex], activeBoxIndex);
   syncDialogButtonState(val);
   saveNotice.innerText = '✓ Matic Saved!';
 });
 
 // CLEAR BUTTON
-document.getElementById('clearLinkBtn').addEventListener('click', function(){
+document.getElementById('clearNoteBtn').addEventListener('click', function(){
   if(activeBoxIndex === null) return;
   ghostInput.value = '';
-  delete savedLinks[activeBoxIndex];
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(savedLinks));
+  delete savedNotes[activeBoxIndex];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(savedNotes));
   updateBoxAppearance(boxElements[activeBoxIndex], activeBoxIndex);
   syncDialogButtonState('');
-  saveNotice.innerText = '✓ Tinanggal ang link';
+  saveNotice.innerText = '✓ Tinanggal ang laman';
 });
 
 function closeAll(){
@@ -217,25 +217,13 @@ function closeAll(){
 }
 function goMain(){closeAll();}
 
-// LINK BUTTON CLICK: KUNG WALANG LAMAN = LABAS BROWSE DIALOG BOX | KUNG MAY LAMAN = BUKAS LINK
-noLinkBtn.addEventListener('click',function(e){
+// BROWSE BUTTON CLICK: BUBUKAS ANG BROWSE DIALOG BOX (WALANG LINK OPENING)
+browseBtn.addEventListener('click',function(e){
   e.preventDefault();
-  const currentLink = activeBoxIndex !== null ? (savedLinks[activeBoxIndex] || '').trim() : '';
-
-  if(!currentLink){
-    // WALANG LAMAN -> LABAS BROWSE DIALOG BOX
-    myModal.style.display='none';
-    setTimeout(()=>{
-      browseModal.style.display='block';
-    },200);
-  } else {
-    // MAY LAMAN -> BUKAS YUNG NAKA-SAVE NA LINK (NO HISTORY OVERWRITE SA MAIN PAGE)
-    let formattedUrl = currentLink;
-    if(!/^https?:\/\//i.test(formattedUrl)){
-      formattedUrl = 'https://' + formattedUrl;
-    }
-    window.open(formattedUrl, '_blank', 'noopener,noreferrer');
-  }
+  myModal.style.display='none';
+  setTimeout(()=>{
+    browseModal.style.display='block';
+  },200);
 });
 
 window.onclick=(e)=>{
